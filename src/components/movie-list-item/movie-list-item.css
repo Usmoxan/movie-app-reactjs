@@ -48,11 +48,11 @@
     transform: translateY(0px);
 }
 
-.list-group-item.increase .list-group-item-label,
-.list-group-item.list-group-item.increase .list-group-item-input {
+.list-group-item.favorite .list-group-item-label,
+.list-group-item.list-group-item.favorite .list-group-item-input {
     color: #e09f3e;
 }
 
-.list-group-item.list-group-item.increase .btn-star {
+.list-group-item.list-group-item.favorite .btn-star {
     color: #aeaeae;
 }
