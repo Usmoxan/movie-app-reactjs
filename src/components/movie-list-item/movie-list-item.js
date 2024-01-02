@@ -19,7 +19,7 @@ class MovieListItem extends Component {
     }
 
     render() {
-        const { name, viewers } = this.props
+        const { name, viewers, onDelete } = this.props
         const { favourite, like } = this.state
         return (
             <li className={`list-group-item d-flex justify-content-between ${favourite && 'favorite'} ${like && "like"}`}>
@@ -29,7 +29,7 @@ class MovieListItem extends Component {
                     <button type='button' className='btn-coockie btn-sm' onClick={this.onFav}>
                         <i className='fa-solid fa-cookie'></i>
                     </button>
-                    <button type='button' className='btn-trash btn-sm'>
+                    <button type='button' className='btn-trash btn-sm' onClick={onDelete}>
                         <i className='fa-solid fa-trash'></i>
                     </button>
                     <i className="fa-solid fa-star"></i>

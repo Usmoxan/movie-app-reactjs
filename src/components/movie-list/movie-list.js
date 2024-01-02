@@ -1,15 +1,20 @@
-import './movie-list.css'
-import MovieListItem from '../movie-list-item/movie-list-item'
+import "./movie-list.css";
+import MovieListItem from "../movie-list-item/movie-list-item";
 
-const MovieList = ({ data }) => {
-    return (
-        <ul className='movie-list'>
+const MovieList = ({ data, onDelete }) => {
+  return (
+    <ul className="movie-list">
+      {data.map((item) => (
+        <MovieListItem
+          key={item.id}
+          name={item.name}
+          viewers={item.views}
+          favorite={item.favorite}
+          onDelete={() => onDelete(item.id)}
+        />
+      ))}
+    </ul>
+  );
+};
 
-            {data.map(item => (
-                <MovieListItem key={item.id} name={item.name} viewers={item.views} favorite={item.favorite} />
-            ))}
-        </ul>
-    )
-}
-
-export default MovieList
+export default MovieList;
