@@ -5,7 +5,7 @@ import SearchPanel from "../search-panel/search-panel";
 import AppInfo from "../app-info/app-info";
 import MovieList from "../movie-list/movie-list";
 import MoviesAddForm from "../movies-add-form/movies-add-form";
-
+import { v4 as uuidv4 } from "uuid";
 
 class App extends Component {
   constructor(props) {
@@ -16,18 +16,21 @@ class App extends Component {
           name: "Empire of osman",
           views: 365,
           favorite: false,
+          like: false,
           id: 1,
         },
         {
           name: "Ottoman",
           views: 587,
-          favorite: true,
+          favorite: false,
+          like: false,
           id: 2,
         },
         {
           name: "Ertugrul",
           views: 98,
           favorite: false,
+          like: false,
           id: 3,
         },
       ],
@@ -45,9 +48,28 @@ class App extends Component {
   };
 
   addForm = (item) => {
+    const newItem = {
+      name: item.name,
+      views: item.views,
+      id: uuidv4(),
+      favorite: false,
+      like: false,
+    };
     this.setState(({ data }) => ({
-      data: [...data, { ...item }],
+      data: [...data, { ...item, newItem }],
     }));
+  };
+
+  onToggleProp = (id, prop) => {
+    this.setState(({ data }) => {
+      const newArr = data.map((item) => {
+        if (item.id === id) {
+          return { ...item, [prop]: !item.prop };
+        }
+        return item;
+      });
+      return { data: newArr };
+    });
   };
 
   render() {
@@ -61,7 +83,11 @@ class App extends Component {
               <SearchPanel />
               <AppFilter />
             </div>
-            <MovieList data={data} onDelete={this.onDelete} />
+            <MovieList
+              data={data}
+              onToggleProp={this.onToggleProp}
+              onDelete={this.onDelete}
+            />
             <MoviesAddForm addForm={this.addForm} />
           </div>
         </div>
