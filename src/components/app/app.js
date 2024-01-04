@@ -34,6 +34,8 @@ class App extends Component {
           id: 3,
         },
       ],
+      term: "",
+      filter: "all",
     };
   }
   onDelete = (id) => {
@@ -64,27 +66,58 @@ class App extends Component {
     this.setState(({ data }) => {
       const newArr = data.map((item) => {
         if (item.id === id) {
-          return { ...item, [prop]: !item.prop };
+          return { ...item, [prop]: !item[prop] };
         }
         return item;
       });
       return { data: newArr };
     });
   };
+  searchHandler = (arr, term) => {
+    if (term.length === 0) {
+      return arr;
+    }
+
+    return arr.filter((item) => item.name.toLowerCase().indexOf(term) > -1);
+  };
+
+  filterHandler = (arr, filter) => {
+    switch (filter) {
+      case "popular":
+        return arr.filter((c) => c.like);
+      case "mostViewers":
+        return arr.filter((c) => c.views > 800);
+
+      default:
+        return arr;
+    }
+  };
+  updateTermHandler = (term) => this.setState({ term });
+  updateFilterHandler = (filter) => this.setState({ filter });
 
   render() {
-    const { data } = this.state;
+    const { data, term, filter } = this.state;
+    const allMoviesCount = data.length;
+    const favoriteMoviesCount = data.filter((g) => g.favorite).length;
+
+    const visibleData = this.filterHandler(
+      this.searchHandler(data, term),
+      filter
+    );
     return (
       <div className="app font-monospace">
         <div className="content">
           <div>
-            <AppInfo />
+            <AppInfo
+              allMoviesCount={allMoviesCount}
+              favoriteMoviesCount={favoriteMoviesCount}
+            />
             <div className="search-panel">
-              <SearchPanel />
-              <AppFilter />
+              <SearchPanel updateTermHandler={this.updateTermHandler} />
+              <AppFilter filter={filter} updateFilterHandler={this.updateFilterHandler} />
             </div>
             <MovieList
-              data={data}
+              data={visibleData}
               onToggleProp={this.onToggleProp}
               onDelete={this.onDelete}
             />
