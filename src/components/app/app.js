@@ -1,5 +1,5 @@
 import "../app/app.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppFilter from "../app-filter/app-filter";
 import SearchPanel from "../search-panel/search-panel";
 import AppInfo from "../app-info/app-info";
@@ -8,31 +8,10 @@ import MoviesAddForm from "../movies-add-form/movies-add-form";
 import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
-  const [data, setData] = useState([
-    {
-      name: "Empire of osman",
-      views: 365,
-      favorite: false,
-      like: false,
-      id: 1,
-    },
-    {
-      name: "Ottoman",
-      views: 587,
-      favorite: false,
-      like: false,
-      id: 2,
-    },
-    {
-      name: "Ertugrul",
-      views: 98,
-      favorite: false,
-      like: false,
-      id: 3,
-    },
-  ]);
+  const [data, setData] = useState([]);
   const [term, setTerm] = useState("");
   const [filter, setFilter] = useState("all");
+  const [isLoading, setIsLoading] = useState(false)
   const onDelete = (id) => {
     const newArr = data.filter((c) => c.id !== id);
     setData(newArr);
@@ -46,7 +25,7 @@ const App = () => {
       like: false,
     };
 
-    const newArr = [...data, ...newItem];
+    const newArr = [...data, newItem];
 
     setData(newArr);
   };
@@ -81,8 +60,26 @@ const App = () => {
     }
   };
 
-  const updateTermHandler = () => setTerm(term);
-  const updateFilterHandler = () => setFilter(filter);
+  const updateTermHandler = (term) => setTerm(term);
+  const updateFilterHandler = (filter) => setFilter(filter);
+
+
+  useEffect(() => {
+    setIsLoading(true)
+    fetch('https://jsonplaceholder.typicode.com/todos?_start=0&_limit=5')
+      .then(response => response.json())
+      .then(json => {
+        const newArr = json.map(item => ({
+          name: item.title, id: item.id, views: 365,
+          favorite: false,
+          like: false,
+        }))
+        setData(newArr)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [])
 
   return (
     <div className="app font-monospace">
@@ -99,6 +96,7 @@ const App = () => {
               updateFilterHandler={updateFilterHandler}
             />
           </div>
+          {isLoading && "Loading..."}
           <MovieList
             data={filterHandler(searchHandler(data, term), filter)}
             onToggleProp={onToggleProp}
